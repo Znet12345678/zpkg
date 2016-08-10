@@ -71,6 +71,8 @@ int pkg_dir(const char *dname,const char *out){
 	while((fent = readdir(d))){
 		if(fent->d_type == DT_DIR)
 			continue;
+		else if(strcmp(fent->d_name,out) == 0)
+			continue;
 		else{
 			char *fname = malloc(1024);
 			sprintf(fname,"%s/%s",dname,fent->d_name);
