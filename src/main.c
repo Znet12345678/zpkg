@@ -2,7 +2,7 @@
 #include "zpkg.h"
 #include <string.h>
 void usage(const char *argv){
-	printf("%s [-x file to extract] [-a directory to archive file output]\n",argv);
+	printf("%s [-x file to extract] [-a directory to archive file output {-v}]\n",argv);
 }
 int getarg(int argc,const char *argv[],char *arg){
 	for(int i = 0; i < argc;i++){
@@ -15,8 +15,12 @@ int main(int argc,const char *argv[]){
 	if(argc < 3)
 		usage(argv[0]);
 	else{
-		if(getarg(argc,argv,"-x") > 0)
-			extract_pkg(argv[getarg(argc,argv,"-x") + 1]);
+		if(getarg(argc,argv,"-x") > 0){
+			if(getarg(argc,argv,"-v") == 0)
+				extract_pkg(argv[getarg(argc,argv,"-x") + 1],1);
+			else
+				extract_pkg(argv[getarg(argc,argv,"-x") + 1],0);
+		}
 		else if(getarg(argc,argv,"-a") > 0){
 			FILE *f = fopen(argv[getarg(argc,argv,"-a") + 2],"wb");
 			if(!(f)){

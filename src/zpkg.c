@@ -118,7 +118,7 @@ int pkg_dir(const char *dname,const char *out){
 	closedir(d);
 	return 1;
 }
-int extract_pkg(const char *name){
+int extract_pkg(const char *name,int v){
 	FILE *f;
 	f = fopen(name,"rb");
 	if(!(f)){
@@ -138,9 +138,11 @@ int extract_pkg(const char *name){
 						dname[i] = c;
 						i++;
 					}
-					printf("Creating dir: %s\n",dname);
+					if(v == 1)
+						printf("Creating dir: %s\n",dname);
 					if(mkdir(dname,mode) < 0){
-						perror("Failed to create dir");
+						if(v == 1)
+							perror("Failed to create dir");
 					}
 				}
 				else
@@ -162,7 +164,8 @@ int extract_pkg(const char *name){
 						fname[i] = c;
 						i++;
 					}
-					printf("Open file:%s\n",fname);
+					if(v == 1)
+						printf("Open file:%s\n",fname);
 					FILE *wf = fopen(fname,"wb");
 					if(!(wf)){
 						perror("Failed to open file!");
