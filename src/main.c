@@ -16,7 +16,7 @@ int main(int argc,const char *argv[]){
 		usage(argv[0]);
 	else{
 		if(getarg(argc,argv,"-x") > 0){
-			if(getarg(argc,argv,"-v") == 0)
+			if(getarg(argc,argv,"-v") > 0)
 				extract_pkg(argv[getarg(argc,argv,"-x") + 1],1);
 			else
 				extract_pkg(argv[getarg(argc,argv,"-x") + 1],0);
