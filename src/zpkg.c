@@ -118,7 +118,7 @@ int pkg_dir(const char *dname,const char *out){
 	closedir(d);
 	return 1;
 }
-int extract_pkg(const char *name,int v){
+int extract_pkg(const char *name,int v,const char *out){
 	FILE *f;
 	f = fopen(name,"rb");
 	if(!(f)){
@@ -126,6 +126,11 @@ int extract_pkg(const char *name,int v){
 		return -1;
 	}
 	int c;
+	DIR *d = opendir(out);
+	if(!(d)){
+		perror("Couldn't open dir");
+		return -1;
+	}
 	while((c = getc(f)) != EOF){
 		if(c == dsig[0]){
 			int pos = ftell(f);
@@ -133,9 +138,11 @@ int extract_pkg(const char *name,int v){
 				if(getc(f) == 0x0f && getc(f) == __TYPE_D && getc(f) == 0x0f){
 					mode_t mode = getc(f) << 8 | getc(f);
 					char *dname = malloc(1024);
+					sprintf(dname,"%s/",out);
+					int n = strlen(dname);
 					int i = 0;
 					while((c = getc(f)) != 0){
-						dname[i] = c;
+						dname[i + n] = c;
 						i++;
 					}
 					if(v == 1)
@@ -159,17 +166,19 @@ int extract_pkg(const char *name,int v){
 				mode_t mode = getc(f) << 8 | getc(f);
 				if(getc(f) == 0x0f && getc(f) == __TYPE_F && getc(f) == 0x0f){
 					char *fname = malloc(1024);
+					sprintf(fname,"%s/",out);
+					int n = strlen(fname);
 					int i = 0;
 					while((c = getc(f)) != 0){
-						fname[i] = c;
+						fname[i + n] = c;
 						i++;
 					}
 					if(v == 1)
 						printf("Open file:%s\n",fname);
 					FILE *wf = fopen(fname,"wb");
 					if(!(wf)){
-						perror("Failed to open file!");
-						return -1;
+						perror("Failed to open file");
+						//return -1;
 					}
 					while((c = getc(f)) != EOF){
 						if(c == 0x0f){

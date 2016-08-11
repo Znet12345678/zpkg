@@ -11,5 +11,5 @@ struct header{
 	int perms;
 };
 int pkg_dir(const char *dir,const char *out);
-int extract_pkg(const char *name,int v);
+int extract_pkg(const char *name,int v,const char *out);
 #endif
